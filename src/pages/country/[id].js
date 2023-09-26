@@ -3,11 +3,12 @@ import Layout from "../../components/Layout/Layout";
 import styles from "./Country.module.css";
 
 const getCountry = async (id) => {
-  const res = await fetch(`https://restcountries.eu/rest/v2/alpha/${id}`);
 
+  const res = await fetch(`https://restcountries.com/v3.1/alpha/${id}`);
+  
   const country = await res.json();
 
-  return country;
+  return country[0];
 };
 
 const Country = ({ country }) => {
@@ -25,16 +26,14 @@ const Country = ({ country }) => {
     getBorders();
   }, []);
 
-  console.log(borders);
-
   return (
-    <Layout title={country.name}>
+    <Layout title={country.name?.common}>
       <div className={styles.container}>
         <div className={styles.container_left}>
           <div className={styles.overview_panel}>
-            <img src={country.flag} alt={country.name}></img>
+            <img src={country.flags?.png} alt={country.flags?.alt}></img>
 
-            <h1 className={styles.overview_name}>{country.name}</h1>
+            <h1 className={styles.overview_name}>{country.name?.common}</h1>
             <div className={styles.overview_region}>{country.region}</div>
 
             <div className={styles.overview_numbers}>
@@ -66,41 +65,41 @@ const Country = ({ country }) => {
             <div className={styles.details_panel_row}>
               <div className={styles.details_panel_label}>Languages</div>
               <div className={styles.details_panel_value}>
-                {country.languages.map(({ name }) => name).join(", ")}
+                {Object.values(country.languages).map((name) => name).join(", ")}
               </div>
             </div>
 
             <div className={styles.details_panel_row}>
               <div className={styles.details_panel_label}>Currencies</div>
               <div className={styles.details_panel_value}>
-                {country.currencies.map(({ name }) => name).join(", ")}
+                {Object.values(country.currencies).map(({ name }) => name).join(", ")}
               </div>
             </div>
 
             <div className={styles.details_panel_row}>
               <div className={styles.details_panel_label}>Native name</div>
               <div className={styles.details_panel_value}>
-                {country.nativeName}
+                {Object.values(country.name.nativeName)[0].common}
               </div>
             </div>
 
             <div className={styles.details_panel_row}>
               <div className={styles.details_panel_label}>Gini</div>
-              <div className={styles.details_panel_value}>{country.gini} %</div>
+              <div className={styles.details_panel_value}>{Object.values(country.gini || { gini: 'Sem dado'})}</div>
             </div>
 
             <div className={styles.details_panel_borders}>
-              <div className={styles.details_panel_borders_label}>
+              <div   className={styles.details_panel_borders_label}>
                 Neighbouring Countries
               </div>
 
               <div className={styles.details_panel_borders_container}>
-                {borders.map(({ flag, name }) => (
+                {borders?.map(({ flags, name }) => (
                   <div className={styles.details_panel_borders_country}>
-                    <img src={flag} alt={name}></img>
+                    <img src={flags?.png} alt={name?.common}></img>
 
                     <div className={styles.details_panel_borders_name}>
-                      {name}
+                      {name?.common}
                     </div>
                   </div>
                 ))}
@@ -116,11 +115,11 @@ const Country = ({ country }) => {
 export default Country;
 
 export const getStaticPaths = async () => {
-  const res = await fetch("https://restcountries.eu/rest/v2/all");
+  const res = await fetch("https://restcountries.com/v3.1/all");
   const countries = await res.json();
 
   const paths = countries.map((country) => ({
-    params: { id: country.alpha3Code },
+    params: { id: country.cca3 },
   }));
 
   return {
