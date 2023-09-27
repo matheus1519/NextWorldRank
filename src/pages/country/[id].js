@@ -15,9 +15,11 @@ const Country = ({ country }) => {
   const [borders, setBorders] = useState([]);
 
   const getBorders = async () => {
-    const borders = await Promise.all(
-      country.borders.map((border) => getCountry(border))
-    );
+    if(country.borders){
+      const borders = await Promise.all(
+        country.borders.map((border) => getCountry(border))
+      );
+    }
 
     setBorders(borders);
   };
@@ -85,7 +87,7 @@ const Country = ({ country }) => {
 
             <div className={styles.details_panel_row}>
               <div className={styles.details_panel_label}>Gini</div>
-              <div className={styles.details_panel_value}>{Object.values(country.gini || { gini: 'Sem dado'})}</div>
+              <div className={styles.details_panel_value}>{Object.values(country.gini || { gini: 'No data'})}</div>
             </div>
 
             <div className={styles.details_panel_borders}>
@@ -103,6 +105,7 @@ const Country = ({ country }) => {
                     </div>
                   </div>
                 ))}
+                {!borders.length && <div>No Borders</div>}
               </div>
             </div>
           </div>

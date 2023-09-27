@@ -115,7 +115,7 @@ const CountriesTable = ({ countries }) => {
 
             <div className={styles.area}>{country.area || 0}</div>
 
-            <div className={styles.gini}>{Object.values(country.gini || { gini: 'Sem dado'})}</div>
+            <div className={styles.gini}>{Object.values(country.gini || { gini: 'No data'})}</div>
           </div>
         </Link>
       ))}
