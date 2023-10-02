@@ -19,9 +19,10 @@ const Country = ({ country }) => {
       const borders = await Promise.all(
         country.borders.map((border) => getCountry(border))
       );
+      
+      setBorders(borders);
     }
 
-    setBorders(borders);
   };
 
   useEffect(() => {
